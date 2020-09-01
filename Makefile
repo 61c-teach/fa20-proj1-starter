@@ -1,8 +1,10 @@
 CC = gcc
-CFLAGS = -lm -g
+CFLAGS = -g -Wall -std=c99 -c
+LDFLAGS = -g -Wall
+VGFLAGS = --tool=memcheck --leak-check=full --dsymutil=yes --track-origins=yes
 
 imageloader: imageloader.o imageloadertester.o
-	$(CC) -o imageloadertester imageloader.o imageloadertester.o $(CFLAGS)
+	$(CC) $(LDFLAGS) -o imageloadertester imageloader.o imageloadertester.o
 	echo "Running imageloadertest"
 	./imageloadertester testInputs/JohnConway.ppm > studentOutputs/JohnConway.ppm
 	diff testInputs/JohnConway.ppm studentOutputs/JohnConway.ppm
@@ -10,28 +12,28 @@ imageloader: imageloader.o imageloadertester.o
 
 imagememcheck: imageloader
 	echo "Running memory check on imageloadertest"
-	valgrind --tool=memcheck --leak-check=full --dsymutil=yes --track-origins=yes ./imageloadertester testInputs/JohnConway.ppm > studentOutputs/JohnConway.ppm
+	valgrind $(VGFLAGS) ./imageloadertester testInputs/JohnConway.ppm > studentOutputs/JohnConway.ppm
 
 
 steganography: imageloader.o steganography.o
 	echo "Running steganography"
-	$(CC) -o steganography steganography.o imageloader.o $(CFLAGS)
+	$(CC) $(LDFLAGS) -o steganography steganography.o imageloader.o
 	./steganography testInputs/JohnConway.ppm > studentOutputs/secretMessage.ppm
 
 steganographymemcheck:  steganography
-	valgrind --tool=memcheck --leak-check=full --dsymutil=yes --track-origins=yes ./steganography testInputs/JohnConway.ppm > studentOutputs/secretMessage.ppm
+	valgrind $(VGFLAGS) ./steganography testInputs/JohnConway.ppm > studentOutputs/secretMessage.ppm
 
 gameoflife: imageloader.o gameoflife.o
-	$(CC) -o gameOfLife gameoflife.o imageloader.o $(CFLAGS)
+	$(CC) $(LDFLAGS) -o gameOfLife gameoflife.o imageloader.o
 	echo "Successfully compiled"
 	echo "Run ./frames.csh for various tests"
 
 gameoflifememcheck: gameoflife
-	valgrind --tool=memcheck --leak-check=full --dsymutil=yes --track-origins=yes ./gameOfLife testInputs/JohnConway.ppm 0x1808 > studentOutputs/temp.ppm
+	valgrind $(VGFLAGS) ./gameOfLife testInputs/JohnConway.ppm 0x1808 > studentOutputs/temp.ppm
 
 
 %.o: %.c
-	$(CC) -c $< $(CFLAGS)
+	$(CC) $(CFLAGS) $<
 
 clean:
 	rm -f *.o
