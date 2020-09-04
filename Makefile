@@ -3,6 +3,15 @@ CFLAGS = -g -Wall -std=c99 -c
 LDFLAGS = -g -Wall
 VGFLAGS = --tool=memcheck --leak-check=full --dsymutil=yes --track-origins=yes
 
+all: PartA PartB
+
+PartA: imageloader.o imageloadertester.o steganography.o
+	$(CC) $(LDFLAGS) -o imageloadertester imageloader.o imageloadertester.o
+	$(CC) $(LDFLAGS) -o steganography steganography.o imageloader.o
+
+PartB: imageloader.o gameoflife.o
+	$(CC) $(LDFLAGS) -o gameOfLife gameoflife.o imageloader.o
+
 imageloader: imageloader.o imageloadertester.o
 	$(CC) $(LDFLAGS) -o imageloadertester imageloader.o imageloadertester.o
 	echo "Running imageloadertest"
