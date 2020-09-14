@@ -31,14 +31,14 @@ Image *steganography(Image *image)
 }
 
 /*
-Loads a .ppm from a file, and prints to stdout (e.g. with printf) a new image, 
+Loads a file of ppm P3 format from a file, and prints to stdout (e.g. with printf) a new image, 
 where each pixel is black if the LSB of the B channel is 0, 
 and white if the LSB of the B channel is 1.
 
 argc stores the number of arguments.
 argv stores a list of arguments. Here is the expected input:
 argv[0] will store the name of the program (this happens automatically).
-argv[1] should contain a filename, containing a .ppm.
+argv[1] should contain a filename, containing a file of ppm P3 format (not necessarily with .ppm file extension).
 If the input is not correct, a malloc fails, or any other error occurs, you should exit with code -1.
 Otherwise, you should return from main with code 0.
 Make sure to free all memory before returning!
